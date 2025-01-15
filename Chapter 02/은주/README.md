@@ -46,3 +46,29 @@
 ### 2.1.3. 람다와 외부 변수
 - 람다도 '순수함수와 참조 투명성' 이라는 핵심 개념을 따르지만, **유연성을 위해 어느정도의 불순성을 허용**한다
 - `캡처` 를 통해 람다가 정의된 생성스코프 내의 상수, 변수를 획득할 수 있다
+```java
+public class LambdaCapture {
+
+    public static void main(String... args) {
+        Runnable r = capture();
+        r.run();
+    }
+
+    private static Runnable capture() {
+        var theAnswer = 42;
+
+        Runnable printAnswer = () -> System.out.println("the answer is " + theAnswer);
+
+        return printAnswer;
+    }
+}
+```
+- 캡처 람다와 논캡처 람다의 주요 차이점은 **JVM 최적화 전략**에 있다
+  - JVM 은 실제 사용 패턴에 기반하여 다양한 전략으로 람다를 최적화한다
+  - ❓ JVM 최적화 전략이 어떻게 다른지?
+- 변수가 캡처되지 않은 경우 람다는 내부적으로 간단한 정적 메서드가 될 수 있고, 익명 클래스와 같은 대안적인 접근 방식의 성능을 능가할 수 있다
+  - ❓내부적으로 간단한 정적 메서드가 될 수 있다? 
+- 변수를 캡처하는 상황에서 JVM 은 **추가적인 객체 할당이 발생하며, 성능 및 가비지 컬렉터 시간에 영향**을 줄 수 있다
+- 변수 캡처를 피해야 하는 또 다른 이유 중 하나는 해당 변수가 `Effectively final` (**변수가 선언된 후 그 값이 변경되지 않음**) 이어야 한다는 필요성이 있기 때문이다
+
+#### Effectively final
