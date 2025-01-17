@@ -79,3 +79,46 @@ public interface Predicate<T> {
 - `@FunctionalInterface`는 기존 인터페이스의 하위 호환성 보장
 
 ### 2.1.3 람다와 외부 변수
+- 람다는 유연성을 위해 어느 정도 불순성을 허용
+- 캡처를 통해 람다가 정의된 스코프 내의 상수와 변수 획득 가능
+- 다음과 같이 원래의 스코프가 더 이상 존재하지 않더라도 이러한 변수 사용 가능
+```java
+void capture() {
+    var theAnswer = 42; // theAnswer는 capture 메서드의 스코프 내 선언됨
+
+    Runnable printAnswer =
+      () -> System.out.println("the answer is " + theAnswer); // 람다 표현식 printAnswer는 그 변수를 바디 내에서 캡처함
+    
+    run(printAnswer); // 이 람다 표현식은 다른 메서드오 스코프에서 실행될 수 있지만 변수 theAnswer에도 여전히 접근 가능
+}
+
+capture();
+// 출력 :
+// the answer is 42
+```
+
+- 캡처 람다와 논캡처 람다의 주요 차이점은 JVM 최적화 전략에 있다.
+- JVM은 실제 사용 패턴에 기반하여 다양한 전략으로 람다 최적화
+- 변수가 캡처되지 않은 경우 람다는 내부적으로 간단한 정적 메서드가 될 수 있으며, 익명 클래스와 같은 대안적인 접근 방식의 성능 능가 가능
+- 그러나 변수 캡처가 성능에 미치는 영향은 명확하지 않음
+- 최소한의 객체 할당 또는 최고의 성능이 필요한 경우에는 불필요한 캡처 사용을 피하는 것이 좋다.
+- 변수 캡처를 피해야 하는 또 다른 이유 중 하나는 해당 변수가 'Effectively final'이어야 한다는 필요성이 있기 때문
+
+#### Effectively final
+- JVM은 캡처된 변수를 안전하게 사용 / 최상의 선응을 얻기 위해 반드시 지켜야 하는 본질적인 요구사항이 있음 : 캡처되는 변수는 반드시 Effectively final이어야 한다.
+- 캡처된 어떤 변수든 초기화된 이후에 값이 한 번도 변경되지 않았다면 Effectively final이라고 할 수 있다.
+  - final 키워드를 명시적으로 사용하거나 쵝화된 이후에 상태가 변경되지 않도록 유지해야 함
+- 실제로 변수를 참조하기 위한 것이며 자료구조에는 해당되지 않는다. (ex. List<String>에 대한 참조가 final로 선언되어도 여전히 새 항목 추가 가능)
+```java
+final List<String> wordList = new ArrayList<>();
+
+// 컴파일 성공
+Runnable addItemInLambda = () -> wordList.add("adding is find");
+
+// 컴파일 실패
+wordList = List.of("assigning", "another", "List", "is", "not");
+```
+- 컴파일러가 외부에서 참조되는 부분을 effectively final로 처리해주기 때문에 실제 불변성에는 큰 도움이 되지 않는다.
+- final과 같은 수정자를 추가하는 것은 항상 의도를 갖고 신중하게 결정해야 함.
+
+#### 참조를 다시 final로 만들기
