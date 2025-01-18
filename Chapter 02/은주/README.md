@@ -75,3 +75,33 @@ public class LambdaCapture {
 - JVM 은 캡처된 변수를 안전하게 사용하고, 최상의 성능을 얻기 위해 반드시 지켜야 하는 요구사항이 있다.
   - **반드시 캡처되는 변수는 Effective Final 이어야 한다.**
 - `final` 키워드를 명시적으로 사용하거나, **초기화된 이후에 상태가 변경되지 않도록 유지**해야 한다
+- 하지만 이 요구사항은 실제로 변수를 참조하기 위한 것이며, **자료 구조에는 해당되지 않는다**
+- 변수가 Effective final 인지 확인하는 가장 간단한 방법은 해당 변수를 명시적으로 final 로 선언하는 것이다
+  - final 키워드가 추가되고도 컴파일이 가능하다면 해당 키워드 없이도 컴파일이 된다
+  - 그렇다면 왜 무조건 final 로 선언하지 않을까?
+    - **컴파일러가 외부에서 참조되는 부분을 effectively final 로 처리해주기 때문에** 실제 불변성에는 큰 도움이 되지 않는다
+    - 오히려 final 을 붙여서 코드의 가독성만 떨어지므로 항상 의도를 갖고 신중히 결정해야 한다
+
+#### 참조를 다시 final 로 만들기
+- effectively final 과 같은 람다 내 변수 사용에 대한 보호장치는 처음에 부담스러울 수 있다
+- **외부 영역 변수를 캡처하는 대신 람다는 자체적으로 필요한 모든 데이터를 인수로 요청해야 한다**
+
+### 2.1.4. 익명 클래스는 무엇인가?
+- 구체적인 인터페이스를 구현해야 할 경우 람다 표현식과 익명 클래스의 차이점
+```java
+// 함수형 인터페이스
+public interface HelloWorld {
+    String sayHello(String name);
+}
+
+HelloWorld helloWorld = name -> "hello, " + name + "!";
+
+// 익명 클래스
+var helloWorld = new HelloWorld() {
+    @Override
+    public String sayHello(String name) {
+        return "hello, " + name + "!";
+    }
+};
+```
+- 람다는 문법 설탕 (특정 구조를 더 간결하고 명확하게 표현할 수 있는 대안) 처럼 보일 수 있지만, 실제로 **가독성 외에도 생성된 바이트 코드와 런타임 처리 방식**에 차이가 있다.
