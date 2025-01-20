@@ -122,3 +122,67 @@ wordList = List.of("assigning", "another", "List", "is", "not");
 - final과 같은 수정자를 추가하는 것은 항상 의도를 갖고 신중하게 결정해야 함.
 
 #### 참조를 다시 final로 만들기
+```java
+var nonEffectivelyFinal = 1_000L; // 이 시점에서는 여전히 effective final임
+
+nonEffectivelyFinal = 9_000L; // 변수를 초기화한 후 변수를 변경하면 해당 변수를 람다에서 사용할 수 없게 됨
+
+var finalAgain = nonEffectivelyFinal; // 새 변수를 선언하고 해당 변수를 초기화한 후 변경하지 않으면 기존 자료 구조에 대한 참조를 다시 final로 만드는 효과를 냄
+
+Predicate<Long> isOver9000 = input -> input > finalAgain;
+```
+- 참조를 다시 final로 바꾸는 것은 임시 방편임. 코드를 리팩터링하거나 재설계하는 것이 더 나은 선택지가 될 것
+- 외부 영역 변수를 캡처하는 대신 람다는 자체적으로 필요한 모든 데이터를 인수로 요청해야 함
+
+### 2.1.4 익명 클래스는 무엇인가?
+- 표면적으로 익명 클래스에 의해 구현된 함수형 인터페이스는 람다 표현식과 꽤 유사해 보이지만, 불필요한 부분이 있다는 점이 다름
+```java
+// 함수형 인터페이스
+interface HellowWorld() {
+  String sayHello(String name);
+}
+
+// 익명 클래스
+var helloWorld = new HelloWorld() {
+  @Override
+  public String sayHello(String name) {
+    return "hello, " + name + "!";
+  }
+};
+
+// 람다
+Helloworld hellowWorldLambda = name -> "hello, " + name + "!";
+```
+- 람다 표현식이 함수형 인터페이스를 익명 클래스로 구현하는 것의 `문법 설탕`<sub>syntactic sugar</sub>일 뿐일까? 아님! 실제로는 그 이상의 기능을 갖는다.
+- 실제 차이점은 **바이트 코드와 런타임 처리 방식**에 있다.
+```
+// 익명 클래스
+0: new #7 // class HelloWorldAnonymous$1 
+3: dup
+4: invokespecial #9 // Method HelloWorldAnonymous1."<init>":()V 
+7: astore_1
+8: return
+
+// 람다
+0: invokedynamic #7,0 // InvokeDynamic #0:sayHello:()LHelloWorld; 
+5: astore_1
+6: return
+```
+- 두 버전 모두 공통적으로 `astore_1`를 호출로 사용하여 참조를 로컬 변수에 저장하고, return 호출을 사용함. 따라서 두 경우 모두 바이트 코드 분석에 포함되지 않음
+- 익명 클래스 버전은 익명 타입인 `HelloWorldAnonymous$1`의 새로운 객체를생성하며, 이로 인해 세 개의 명령 코드를 생성함
+- 람다 버전은 스택에 사용해야 하는 인스턴스를 생성할 필요가 없다. 그 대신 람다의 생성 전체 작업을 단일 명령 코드인 `invokeddynamic`을 사용하여 JVM에 위임한다.
+- 람다와 익명 내부 클래스 간 또 다른 중요한 차이점은 각각의 스코프이다.
+- 내부 클래스는 자체 스코프를 생성하고 해당 범위 내의 로컬 변수를 외부로부터 감춘다.
+- 반면에 람다는 자신이 속한 스코프 범위 내에 존재한다. 변수는 동일한 이름으로 재선언될 수 없으며 정적이지 않은 경우 this는 람다가 생성된 인스턴스를 참조한다.
+
+## 2.2 람다의 실전 활용
+
+### 2.2.1 람다 생성
+- 람다 표현식을 만들기 위해서는 **단일 함수형 인터페이스**를 표현해야 한다.
+- 메서드에서 수신에 필요한 인수의 타입을 지정하거나 가능한 경우에 컴파일러가 추론할 수 있기 때문에 실제 타입은 명확하지 않을 수 있습니다.
+
+- 새 인스턴스를 생성하려면 왼쪽에 타입이 정의되어야 한다.
+  ```java
+  Predicate<String> isNull = value -> value == null;
+  ```
+- 인수에
