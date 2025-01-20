@@ -185,4 +185,35 @@ Helloworld hellowWorldLambda = name -> "hello, " + name + "!";
   ```java
   Predicate<String> isNull = value -> value == null;
   ```
-- 인수에
+- 인수 명시적인 타입을 사용하는 경우에도 여전히 함수형 인터페이스 타입이 필요하다.
+  ```java
+  // 컴파일 실패
+  var isNull = (String value) -> value == null;
+  ```
+- Predicate<String> SAM 메서드는 추론 가능하다.
+```java
+boolean test(String input)
+```
+- 여전히 자바 컴파일러는 참조에 구체적인 타입을 요구하며, 메서드 시그니처만으로는 충분하지 않다.
+- 또한 동일한 SAM을 사용하는 함수형 인터페이스에 할당하려고 해도 컴파일되지 않는다.
+- 다음과 같이 메서드 인수와 리턴 타입으로써 임의로 생성된 람다는 타입 호환성이 없다.
+```java
+List<String> filter1(List<String> values, Predicate<String> predicate) {
+    // ...
+}
+
+List<String> filter2(List<String> values, Predicate<String> predicate) {
+    // ...
+}
+
+var values = Arrays.asList("a", null, "c");
+
+var result1 = filter1(values, value -> value != null);
+
+var result2 = filter2(values, value -> value != null);
+```
+
+- 컴파일러는 메서드 시그니처에서 직접 람다의 타입을 추론하므로 람다로 얻고자 하는 결과에 집중할 수 있다. 리턴 타입에 대해서도 마찬가지다.
+
+
+
