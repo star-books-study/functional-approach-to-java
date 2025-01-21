@@ -41,4 +41,12 @@ Double result = random.get()
 System.out.println("random = " + result)
 ```
 - Supplier 는 종종 `지연 실행` 에 사용된다. 비용이 많이 드는 작업을 **Supplier 로 래핑하고 필요할 때만 get을 호출하는 경우**가 있다.
+
 ### 3.1.4. Predicate
+- Predicate 은 단일 인수를 받아 그것을 로직에 따라 테스트하고, true or false 를 반환한다
+```java
+@FunctionalInterface
+public interface Predicate<T> {
+    boolean test(T t);
+}
+```
