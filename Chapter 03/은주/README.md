@@ -50,3 +50,6 @@ public interface Predicate<T> {
     boolean test(T t);
 }
 ```
+- 필터 메서드와 같이 `의사결정`에 주로 사용된다
+
+## 3.2. 함수형 인터페이스 변형이 많은 경우
