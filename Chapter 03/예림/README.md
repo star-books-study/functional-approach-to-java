@@ -30,3 +30,27 @@ public interface Comsumer<T> {
 ```
 - 값의 소비만이 '순수한' 함수형 개념에 완벽하게 부합하지 않을 수 있지만, 비함수형 코드와 고차 함수 사이의 많은 간극을 극복하는 역할을 한다.
 - `Comsumer<T>`는 `java.util.concurrent` 패키지의 자바5+ Callable<V>와 유사하다. 다만, 후자는 checked Exception을 던진다.
+
+### 3.1.3 Supplier
+- 어떠한 입력 파라미터도 받지 않지만, T 타입의 단일 값을 반환
+- `Supplier`의 단일 추상 메서드는 `get`으로 정의된다.
+```java
+@FunctionalInterface
+public interface Supplier<T> {
+    T get();
+}
+```
+- 종종 지연 실행에 사용
+    - 비용이 많이 드는 작업을 Supplier로 래핑하고 필요할 때만 get 호출
+### 3.1.4 Predicate
+- 단일 인수를 받아 그것을 로직에 따라 테스트하고 true 또는 false 반환
+- `Predicate<T>`의 단일 추상 메서드는 test로, T 타입의 인수를 받아 boolean 타입을 변환한다.
+```java
+@FunctionalInterface
+public interface Predicate<T> {
+    booelan test(T t);
+}
+```
+- 필터 메서드와 같이 의사 결정에 주로 사용됨
+
+## 3.2 함수형 인터페이스 변형이 많은 이유
