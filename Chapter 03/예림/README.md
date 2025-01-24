@@ -66,7 +66,7 @@ public interface Predicate<T> {
     ```
 - SAM에는 각 아리티에 대한 명시적인 함수형 인터페이스가 있어야 한다.
 - JDK에는 더 높은 라이티를 지원하기 위해 주요 함수형 인터페이스 범주에서 인수를 받아들이는 특수한 변형이 포함되어 있다.
-  | 인수가 1개인 경유 | 인수가 2개인 경우 |
+  | 인수가 1개인 경우 | 인수가 2개인 경우 |
   | ----------------- | ----------------- |
   | Function<T, R>    | BiFunction<T, U, R> |
   | Consumer<T>       | BiConsumer<T, U>    |
@@ -90,3 +90,12 @@ interface BinaryOperation<T> extends BiFunction<T, T, T> {
     // ...
 }
 ```
+- 사용 가능한 Operator 함수형 인터페이스는 다음과 같다.
+  | 연산자 | 슈퍼 인터페이스 |
+  | ----------------- | ----------------- |
+  | UnaryOperator<T, R>    | Function<T, U, R> |
+  | BinaryOperator<T>       | BiFunction<T, T, T>    |
+
+- 하지만 연산자 타입과 해당 상위 인터페이스는 상휘 호환 불가
+- 예를 들어 어떤 메서드 시그니처가 UnaryOperator<String>을 요구하는 경우 Function<String, String>과 호환되지 않을 수 있다. 그러나 그 반대의 경우는 가능하다.
+```java
