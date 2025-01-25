@@ -99,3 +99,20 @@ interface BinaryOperation<T> extends BiFunction<T, T, T> {
 - 하지만 연산자 타입과 해당 상위 인터페이스는 상휘 호환 불가
 - 예를 들어 어떤 메서드 시그니처가 UnaryOperator<String>을 요구하는 경우 Function<String, String>과 호환되지 않을 수 있다. 그러나 그 반대의 경우는 가능하다.
 ```java
+UnaryOperator<String> unaryOp = String::toUpperCase;
+Function<String, String> func = String::toUpperCase;
+
+void acceptsUnary(UnaryOperator<String> unaryOp) { ... };
+void acceptsFunction(Function<String, String> func) { ... };
+
+acceptsUnary(unaryOp); // OK
+acceptsUnary(func); // 컴파일 오류
+
+acceptsFunction(func); // OK
+acceptsFunction(unaryOp); // OK
+```
+- 이 예제에서는 가장 일반적인 타입, 즉 Function<String, String>을 선택하는 것이 호환성을 높이는 방법임
+
+### 3.2.2 원시 타입
+- 지금까지 만난 대부분의 함수형 인터페이스는 제네릭 타입 정의를 가지고 있었지만 항상 그렇지 않음
+- 원시 타입은 아직까지 제네릭 타입으로 사용될 수없음. 그래서 원시 타입에 특화된 함수형 인터페이스가 존재
