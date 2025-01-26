@@ -67,3 +67,39 @@ public interface Predicate<T> {
 |Predicate<T>|BiPredicate<T, U>|
 - 자바의 기본적인 인터페이스는 인수를 최대 2개까지 지원하고, 아리티가 1개 또는 2개인 것이 가장 일반적이다.
 - 더 높은 아리티를 추가하는 것은 간단하긴 하지만, 함수형 인터페이스는 정적 및 기본 메소드를 통해 추가 기능을 많이 제공한다. <br> 따라서 이런 기능을 사용하는 것이 최상의 호환성과 이해하기 쉬운 사용 패턴을 보장한다
+```java
+public class ArityCompatibility {
+
+    public static void main(String[] args) {
+        UnaryOperator<String> unaryOp = String::toUpperCase;
+        Function<String, String> func = String::toUpperCase;
+
+        // THESE TWO CALLS ARE OK
+        acceptsUnary(unaryOp);
+        acceptsFunction(func);
+        acceptsFunction(unaryOp);
+
+        // THIS CALL WON'T COMPILE
+        acceptsUnary(func);
+
+        //
+        // COMPILER ERROR:
+        // The method acceptsUnary(UnaryOperator<String>) in the type ArityCompatibility is
+        // not applicable for the arguments (Function<String,String>)
+        //
+    }
+
+    private static void acceptsUnary(UnaryOperator<String> unaryOp) {
+        // ...
+    }
+
+    private static void acceptsFunction(Function<String, String> func) {
+        // ...
+    }
+}
+```
+- 메서드 인수에 가장 일반적인 타입인 Function<String, String> 을 선택하는 것이 **호환성을 가장 높이는** 방법이다
+- **메서드 시그니처의 가독성은 높아지지만 사용성을 극대화하고, 특화된 함수형 인터페이스에 인수를 제한하는 것이 아니기 때문에 권장한다**
+- 람다를 생성할 때 특화된 타입을 사용하면, 코드가 더 간결해지고 개발자 본래 의도를 유지할 수 있다
+
+### 3.2.2. 원시 타입
