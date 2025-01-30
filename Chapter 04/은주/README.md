@@ -67,3 +67,59 @@
 - 성능 고려로 인해 String 은 hashCode 를 지연해서 계산한다. **동일한 String 은 항상 동일한 hashCode 를 생성한다**
   - hashCode() 가 처음 호출될 때까지 해시코드 계산을 미루는데, 이 과정에서 hashCode 값을 저장하는 내부 필드가 변경될 수 있다.
   - 하지만 이런 내부 구현의 변경이 String 객체의 불변성을 위반하지는 않는다. hashCode의 지연 계산은 **불변성의 핵심 특성을 훼손하지 않으면서 성능을 개선하기 위한 내부 구현 세부사항**이다
+
+### 4.3.2. 불변 컬렉션
+- 자바에서 불변성을 제공하는 3가지 방법
+  - `변경 불가능한 컬렉션`
+    - 불변 컬렉션 : **생성 후 그 상태가 절대로 변경되지 않음**. 컬렉션에 요소를 추가, 삭제, 변경 불가
+    - 변경 불가능한 컬렉션 : **특정 컬렉션 뷰에 대해 수정 작업을 실행할 수 없음**. 이 뷰를 통해서는 데이터를 변경할 수 없지만, **원본 컬렉션 자체는 참조를 통해 변경 가능**.
+  - `불변 컬렉션 팩토리 메서드`
+  - `불변 복제`
+- 하지만 이들은 얕은 불변성만을 갖고 있어, 요소 자체의 불변성을 보장하지 않는다
+  - 얕은 불변성 : 최상위 계층에서만 불변성 유지. **자료 구조 자체의 참조는 변경되지 않지만,** 컬렉션과 같이 **참조된 자료 구조의 요소들은 변경될 수 있다**
+
+#### 변경 불가능한 컬렉션
+- Collection<T> unmodifiableCollection(Collection<? extends T> c)
+- Set<T> unmodifiableSet(Set<? extends T> s)
+- List<T> unmodifiableList(List<? extends T> list)
+- Map<K,V> unmodifiableMap(Map<? extends K, ? extends V> m)
+```java
+List<String> modifiable = new ArrayList<>();
+modifiable.add("blue");
+modifiable.add("red");
+
+List<String> unmodifiable = Collections.unmodifiableList(modifiable);
+unmodifiable.clear();
+
+// Exception java.lang.UnsupportedOperationException
+//       at Collections$UnmodifiableCollection.clear (Collections.java:1086)
+//       at (#5:1)
+```
+- 반환된 인스턴스를 수정할 때 UnsupportedOperationException 발생
+- **'변경 불가능한 뷰' 의 명백한 단점은 기존 컬렉션에 대한 추상화에 불과하다**는 점이다
+- 여전히 **기본 컬렉션은 변경될 수 있으며**, 원본에 직접적인 변경이 이루어질 경우 뷰가 추구하는 '변경 불가능한 특성' 을 우회하게 된다
+- '변경 불가능한 뷰' 는 **주로 반환값으로 사용될 컬렉션에 대해 원치않는 변경을 막기 위해 사용**된다 (원본값에 대한 변경은 막을 수 없기 때문 !)
+  - 원본 데이터에 대한 참조가 필요하고, 원본 데이터의 변경에 따라 불변 뷰의 값도 함께 변경되어야 하는 경우에 사용하면 좋다
+
+#### 불변 컬렉션 팩토리 메소드
+- List<E> of(E e1, ...)
+- Set<E> of(E e1, ...)
+- Map<K,V> of(K k1, V v1, ...)
+```java
+static <E> List<E> of(E e1) {
+    return new ImmutableCollections.List12<>(e1);
+}
+```
+- unmodifiableList()와 다른 점이자 중요한 점은 뷰가 아닌 **객체의 복사본을 따로 생성한다**는 점이다.
+- Stream 의 toList() 도 복사본을 따로 생성하므로 불변 리스트를 만들 수 있다
+    ```java
+    default List<T> toList() {
+        return (List<T>) Collections.unmodifiableList(new ArrayList<>(Arrays.asList(this.toArray())));
+    }
+    ```
+- Arrays.asList() 는 조금 애매하다. add, remove는 불가능하나, set() 메소드로 기존 원소의 값을 변경하는 것은 가능하다
+    > Arrays.asList()와 List.of()의 차이
+    > - Arrays.asList()는 add, remove 등은 안되지만(UnsupportedOperationException 발생), set을 통해서 특정 인덱스에 있는 원소를 바꾸는 것은 가능하다. 
+    > - 하지만 List.of()는 add, remove, set 모두 불가능하다.
+
+#### 불변 복제
