@@ -123,3 +123,24 @@ static <E> List<E> of(E e1) {
     > - 하지만 List.of()는 add, remove, set 모두 불가능하다.
 
 #### 불변 복제
+- Set<E> copyOf(Collection<? extends E> col1)
+- List<E> copyOf(Collection<? extends E> col1)
+    ```java
+    static <E> List<E> copyOf(Collection<? extends E> coll) {
+        return ImmutableCollections.listCopy(coll);
+    }
+    ```
+- Map<K,V> copyOf(Map<? extends K, ? extneds V> map)
+- copyOf 메서드는 새로운 컨테이너를 생성하여 **요소들의 참조를 독립적으로 유지**한다
+```java
+List<String> original = new ArrayList<>();
+original.add("blue");
+original.add("red");
+
+List<String> copiedList = List.copyOf(original);
+
+original.add("green");
+
+System.out.println("original = " + original) // blue, red, green
+System.out.println("copy = " + copiedList) // blue, red
+```
