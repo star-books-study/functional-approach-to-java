@@ -144,3 +144,12 @@ original.add("green");
 System.out.println("original = " + original) // blue, red, green
 System.out.println("copy = " + copiedList) // blue, red
 ```
+
+### 4.3.3. 원시 타입과 원시 래퍼
+- 원시 타입은 리터럴 또는 표현식을 통해 초기화되는 단순한 값을 나타낸다
+- 이들은 각자 하나의 값을 표현하며 **사실상 불변의 특성을 갖는다**
+
+### 4.3.4. 불변 수학
+- java.math 패키지에는 정수와 소수점 계산을 더욱 안전하고 정확하게 처리하기 위한 java.math.BigInteger, java.math.BigDecimal 불변클래스가 제공된다
+- 더 넓은 범위와 높은 정밀도로 사이드 이펙트가 없는 계산을 수행할 수 있기에 불변성을 유지해야 한다
+- 
