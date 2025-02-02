@@ -152,4 +152,4 @@ System.out.println("copy = " + copiedList) // blue, red
 ### 4.3.4. 불변 수학
 - java.math 패키지에는 정수와 소수점 계산을 더욱 안전하고 정확하게 처리하기 위한 java.math.BigInteger, java.math.BigDecimal 불변클래스가 제공된다
 - 더 넓은 범위와 높은 정밀도로 사이드 이펙트가 없는 계산을 수행할 수 있기에 불변성을 유지해야 한다
-- 
+- add, subtract 같은 메서드는 최소한 객체지향적 맥락에서는 값의 수정을 의미할 것 같지만, java.math 타입에서는 **새로운 결과를 가진 새로운 객체를 반환한다**
