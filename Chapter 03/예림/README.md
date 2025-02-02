@@ -123,3 +123,100 @@ acceptsFunction(unaryOp); // OK
 - 그래서 JDK에서 제공하는 많은 함수형 인터페이스가 오토박싱을 피하기 위해 원시 타입을 사용함
 - 원시 함수형 인터페이스는 int, long, double과 같은 숫자형 원시 타입 중심으로 제공되지만 **모든 원시 타입을 사용할 수 있는 것은 아님**
    -> 원시 함수형 인터페이스를 통해 오토박싱을 사용할 때 발생하는 불필요한 오버헤드를 줄일 수 있음
+
+### 3.2.3 함수형 인터페이스 브리징
+- 함수형 인터페이스는  이름 그대로 인터페이스이며, 람다 표현식은 이러한 인터페이스들의 구체적인 구현체이다.
+```java
+interface LikePredicate<T> {
+    boolean test(T value);
+}
+
+LikePredicate<String> isNull = value -> value == null;
+Predicate<String> wontCompile = isNull;
+
+// 에러:
+// 호환되지 않는 타입: LikePredicate<String> 은 
+// java.util.function.Predicate<String> 으로 변환될 수 없음
+
+Predicate<String> wontCompilerEither = (Predicate<String>) isNull;
+// 예외 java.lang.ClasscastException : 클래스 LikePredicate을
+// java.util.function.Predicate로 형변환할 수 없음
+```
+- 람다 시점에서보면 두개의 SAM (Single Abstract Method) 은 동일하다. 둘 다 문자열 인수를 boolean 결과를 반환한다.
+- 동일하지만 호환되지 않는' 함수형 인터페이스 간에 형변환을 하는 대신, 메소드 참조 를 사용하면 코드를 컴파일할 수 있도록 SAM 을 참조할 수 있다.
+```java
+Predicate<String> thisIsFine = isNull::test;
+```
+- 메소드 참조를 사용하면 함수형 인터페이스를 묵시적 또는 명시적으로 형변환하는 대신, 새로운 동적 호출 지점이 생성되어 바이트코드의 invokedynamic 명령 코드를 통해 호출된다.
+
+### 3.3 함수 합성
+- 함수 합성은 작은 함수들을 결합하여 더 크고 복잡한 작업을 처리하는 함수형 프로그래밍의 주요 접근 방식이다.
+- 새로운 키워드를 도입하거나 언어의 의미를 변경하는 대신 자바의 글루 메서드를 사용한다.
+- 글루 메서드는 기본적으로 함수형 인터페이스 자체에 직접 구현되며, 이를 통해 4가지 카테고리 함수형 인터페이스를 쉽게 합성할 수 있다.
+- Function<T, R>의 경우 두 가지 기본 메서드를 사용할 수 있다.
+  - compose
+  - andThen
+- 첫 번째 compose 메서드는 before 인수를 입력하고 결과를 이 함수에 적용하여 합성된 함수를 만든다.
+- 두 번째 andThen은 compose에 반대되는 메서드로 함수를 실행한 후에 이전 결과에 after를 적용한다.
+
+
+## 3.4 함수형 지원 확장
+- 대부분 함수형 인터페이스는 기본 메서드, 정적 헬퍼도 제공
+- JDK에서 사용하는 세 가지 접근 방식과 마찬가지로 여전히 직접 만든 타입을 더 함수적으로 만들 수 있음.
+  - 기존 타입을 더 함수적으로 마들기 위해, 인터페이스에 디폴트 메서드 추가
+  - 함수형 인터페이스를 명시적으로 구현
+  - 공통 함수형 작업을 제공하기 위해 정적 헬퍼 생성
+
+### 3.4.1 기본 메서드 추가
+- 인터페이스에 새로운 기능을 추가할 떄는 항상 새로운 메서드를 구현해야 하는데, 이런 상황에서 기본 메서드를 사용하면 시간 절약 가능
+- 인터페이스의 계약을 변경하고 이를 구현하는 모든 타입에 새로운 메서드를 추가하는 대신 기본 메서드를 사용하여 '상식적인' 구현을 제공할 수 있다.
+- 이렇게 하면 의도된 로직의 일반적인 변형을 모든 타입에 적용하여 UnsupportedOperationException 을 사용할 필요가 없다.
+- 하위 호환성 또한 유지할 수 있음
+
+### 3.4.2 함수형 인터페이스 명시적으로 구현하기
+- 함수형 인터페이스는 람다나 메서드 참조를 통해 묵시적으로 구현될 수도 있지만, 더 높은 차수의 함수에서 사용가능하도록 명시적으로 구현하여 사용할 수도 있다.
+- 함수형 인터페이스를 직접 구현하느 것은 이전에 비함수형이었던 타입을 함수형 코드에서 쉽게 사용할 수 있도록 한다.
+- 일반적으로 명령은 이미 해당하는 전용 인터페이스를 갖고 있다.
+- 함수형 인터페이스 간의 논리적 동등성만으로는 호환성을 만들 수 없다.
+- 그러나 TextEditorCommand 를 Supplier<String> 으로 확장함으로써 격차를 메꿔줄 수 있다.
+```java
+public interface TextEditorCommand extends Supplier<T> {
+    String execute();
+
+    default String get() {
+        return execute();
+    }
+}
+```
+
+#### 정적 헬퍼 생성하기
+- JDK 자체에서 제공하는 함수형 인터페이스와 같이 타입을 직접 제어할 수 없는 경우 정적 메서드를 모으는 헬퍼 타입을 만들 수 있다.
+- Function<T, R>와 Supplier/Consumer에 대한 컴포지터를 만들어보자.
+```java
+public fiinal class Compositor {
+
+  public static <T, R> Supplier<R> compose(Supplier<T> before, Function<T, R> fn) {
+      Objects.requireNonNull(before);
+      Objects.requireNonNull(fn);
+
+      return () -> { 
+          T result = before.get();
+          return fn.apply(result);
+      };
+  }
+
+  static <T, R> Consumer<T> compose(Function<T, R> fn, Consumer<R> after) {
+      Objects.requireNonNull(fn);
+      Objects.requireNonNull(after);
+
+      return (T t) -> { 
+          R result = fn.apply(t);
+          after.accept(result);
+      };
+  }
+
+  private Compositor() {
+    // 기본 생성자 생략
+  }
+}
+```
