@@ -153,3 +153,20 @@ System.out.println("copy = " + copiedList) // blue, red
 - java.math 패키지에는 정수와 소수점 계산을 더욱 안전하고 정확하게 처리하기 위한 java.math.BigInteger, java.math.BigDecimal 불변클래스가 제공된다
 - 더 넓은 범위와 높은 정밀도로 사이드 이펙트가 없는 계산을 수행할 수 있기에 불변성을 유지해야 한다
 - add, subtract 같은 메서드는 최소한 객체지향적 맥락에서는 값의 수정을 의미할 것 같지만, java.math 타입에서는 **새로운 결과를 가진 새로운 객체를 반환한다**
+```java
+public class ImmutableMath {
+    public static void main(String[] args) {
+
+        BigDecimal theAnswer = new BigDecimal(42);
+        BigDecimal result = theAnswer.add(BigDecimal.ONE);
+
+        System.out.println("result = " + result); // 43
+        System.out.println("theAnswer = " + theAnswer); // 42
+    }
+}
+```
+- 불변 수학 타입은 일반적인 오버헤드를 동반하는 객체지만, **높은 정밀도를 달성하기 위해서는 추가 메모리가 필요하다**
+
+### 4.3.5. 자바 시간 API (JSR-310)
+- 자바 8 에서는 **불변성을 핵심 원칙으로 하는 자바 시간 API (JSR-310) 을 도입**했다
+- java.util 패키지의 Date, Calendar, TimeZone 을 사용하는 대신, **java.time** 패키지를 통해 다양한 정밀도를 가진 여러 날짜 및 시간 타입을 사용할 수 있다
