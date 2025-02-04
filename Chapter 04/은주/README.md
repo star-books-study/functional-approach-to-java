@@ -170,3 +170,25 @@ public class ImmutableMath {
 ### 4.3.5. 자바 시간 API (JSR-310)
 - 자바 8 에서는 **불변성을 핵심 원칙으로 하는 자바 시간 API (JSR-310) 을 도입**했다
 - java.util 패키지의 Date, Calendar, TimeZone 을 사용하는 대신, **java.time** 패키지를 통해 다양한 정밀도를 가진 여러 날짜 및 시간 타입을 사용할 수 있다
+
+### 4.3.6. enum
+- 자바 열거형은 상수로 구성된 특별한 타입이다
+
+### 4.3.7. final 키워드
+- final 키워드는 클래스, 메서드, 필드 또는 참조에 사용될 수 있다
+  - final 클래스 : **하위 클래스화** 불가
+  - final 메서드 : **오버라이딩** 불가
+  - final 필드 : **재할당** 불가
+  - final 변수 참조 : 필드처럼 동작하며 재할당 불가. **참조형 변수에 들어있는 참조값만 변경하지 못한다는 뜻이고 참조하는 대상의 값은 변경 가능**
+    ```java
+    public static void main(String[] args) {
+        final Data data = new Data();
+        // data = new Data();  // final 변경 불가 컴파일 에러
+
+        // 참조 대상의 값은 변경 가능
+        data.value = 10;
+        System.out.println(data.value); // 10
+        data.value = 20;
+        System.out.println(data.value); // 20
+    }
+    ```
