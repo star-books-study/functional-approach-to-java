@@ -128,3 +128,6 @@ public record Address(String name,
   // 바디 생략
 }
 ```
+- 주로 상태 선언으로 구성된 얕은 불변성을 가진 데이터 운반체
+- 추가 코드 없이도 컴포넌트에 대한 자동으로 생성된 getter, 동등성 비교, toString 및 hashCode 메서드 등 제공
+## 4.4 불변성 만들기
