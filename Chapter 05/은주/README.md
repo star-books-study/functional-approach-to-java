@@ -201,3 +201,44 @@ public record User(
 
 #### 컴포넌트 접근자
 - 모든 레코드 컴포넌트는 private 필드로 저장되며, 외부에서는 public 접근자 메서드를 통해서만 접근 가능하다
+
+#### 표준, 간결, 사용자 정의 생성자
+- 표준 생성자 : 레코드의 각 컴포넌트에 따라 자동으로 생성되는 생성자
+  - 기본 생성자는 입력값의 유효성을 검사하거나 필요에 따라 데이터를 약간 조정하기 위해 재정의 될 수 있음
+```java
+record User(String username,
+            boolean active,
+            LocalDateTime lastLogin) {
+
+    public User(String username,
+                boolean active,
+                LocalDateTime lastLogin) {
+        
+        Objects.requireNonNull(username);
+        Objects.requireNonNull(lastLogin);
+
+        this.username = username.toLowerCase();
+        this.active = active;
+        this.lastLogin = lastLogin;
+    }
+}
+```
+- 간결하게 디자인된 아래와 같은 형태도 제공된다
+  - 생성자에서는 괄호를 포함하여 모든 인수를 생략한다
+  - 컴팩트 생성자는 유효성 검사를 수행하기에 완벽한 지점이다
+```java
+record User(String username,
+            boolean active,
+            LocalDateTime lastLogin) {
+
+    public User {
+        Objects.requireNonNull(username);
+        Objects.requireNonNull(lastLogin);
+        username = username.toLowerCase();
+    }
+}
+```
+
+#### 객체 식별과 설명
+
+
