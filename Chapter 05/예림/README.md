@@ -48,8 +48,49 @@ public final class User {
   public User(String username,
               boolean active,
               LocalDateTime lastLogin) {
-    // 생략
-}
+    this.username = username; // setter 메서드 없이 필드들이 선언됨
+    this.active = active;
+    this.lastLogin = lastLogin;
+  }
 
-  // setter 사라짐
+  public String getUsername() { // getter 메서드는 변경 불가능한 상태로 유지된다.
+    return this.username;
+  }
+
+  public boolean isActive() {
+    return this.active;
+  }
+
+  public LocalDateTime getLastLogin() { // getter 메서드는 변경 불가능한 상태로 유지된다.
+    return this.lastLogin;
+  }
+
+  @Override
+  public int hashCode() { // 부가적으로 생성된 equals, toString 메서드는 변경되지 않는다.
+    // 변경되지 않음
+  } 
+
+  @Override
+  public boolean eqauls(Object obj) { // 부가적으로 생성된 equals, toString 메서드는 변경되지 않는다.
+    // 변경되지 않음
+  } 
+
+  @Override
+  public String toString() { // 부가적으로 생성된 equals, toString 메서드는 변경되지 않는다.
+    // 변경되지 않음
+  } 
+  
 }
+```
+
+### POJO를 레코드로 만들기
+```java
+public record User(String username, boolean active, LocalDateTime lastLogin) {
+  // 바디 생략
+}
+```
+- User 레코드는 불변 POJO와 동일한 기능을 갖추고 있음
+- 어떻게 하면 이렇게 적은 양의 코드로 많은 일을 처리할 수 있을까?
+
+
+## 5.2 도움을 주기 위한 레코드
