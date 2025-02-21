@@ -94,3 +94,8 @@ public record User(String username, boolean active, LocalDateTime lastLogin) {
 
 
 ## 5.2 도움을 주기 위한 레코드
+```java
+public record User(String username, boolean active, LocalDateTime lastLogin) {
+  // 바디 생략
+}
+```
