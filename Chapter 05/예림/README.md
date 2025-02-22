@@ -94,8 +94,14 @@ public record User(String username, boolean active, LocalDateTime lastLogin) {
 
 
 ## 5.2 도움을 주기 위한 레코드
+- 레코드는 인덱스 대신 이름을 통해 데이터에 접근할 수 있음
+
 ```java
 public record User(String username, boolean active, LocalDateTime lastLogin) {
   // 바디 생략
 }
 ```
+
+- 레코드의 일반적인 구문은 두 가지로 나뉜다.
+   - 헤더 : 다른 유형과 동일한 속성 정의
+   - 
