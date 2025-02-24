@@ -104,4 +104,14 @@ public record User(String username, boolean active, LocalDateTime lastLogin) {
 
 - 레코드의 일반적인 구문은 두 가지로 나뉜다.
    - 헤더 : 다른 유형과 동일한 속성 정의
-   - 
+   - 바디 : 추가 생성자와 메서드 지원
+  ```java
+  // 헤더
+  [visibility] record [Name][<optional generic types>]([data components]) {
+    // 바디
+  }
+  ```
+- 컴파일러에 의해 한 줄이 코드가 앞서 봤던 간단한 불변 User 타입과 유사한 클래스로 변환됨
+
+### 5.2.1 내부 동작
+- 
