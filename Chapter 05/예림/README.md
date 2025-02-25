@@ -114,4 +114,6 @@ public record User(String username, boolean active, LocalDateTime lastLogin) {
 - 컴파일러에 의해 한 줄이 코드가 앞서 봤던 간단한 불변 User 타입과 유사한 클래스로 변환됨
 
 ### 5.2.1 내부 동작
-- 
+- javap 명령어를 이용해 .class 파일을 디스어셈블하여 바이트 코드로 POJO의 레코드 버전과 User 타입의 실제 차이를 확인해보면, 접근자 메서드의 차이만 있을 뿐 결과적으로 두 클래스는 기능적으로 동일하다.
+
+### 5.2.2 레코드의 특징
