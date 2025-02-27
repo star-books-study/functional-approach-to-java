@@ -117,14 +117,32 @@ public record User(String username, boolean active, LocalDateTime lastLogin) {
 - javap 명령어를 이용해 .class 파일을 디스어셈블하여 바이트 코드로 POJO의 레코드 버전과 User 타입의 실제 차이를 확인해보면, 접근자 메서드의 차이만 있을 뿐 결과적으로 두 클래스는 기능적으로 동일하다.
 
 ### 5.2.2 레코드의 특징
+#### 컴포넌트 접근자
 - 레코드는 getter의 접두사 get 없이 컴포넌트 이름으로 된 접근자 메서드를 사용할 수 있다.
   ```java
   var username = user.username();
   ```
 - 접근자 메서드를 재정의할 수도 있으나, 레코드는 불변한 데이터를 보관하도록 설계되었기 때문에 추천하지는 않는다.
+
+#### 표준, 간결, 사용자 정의 생성자
 - 레코드는 표준 생성자도 간결하게 디자인된 형태로 제공된다. 생성자의 인수를 생략할 수 있고, 자동으로 컴포넌트가 매핑되어서 직접 `this.username = username`과 같은 코드를 쓸 필요가 없다. 다만 할당되기 전에 사용자가 직접 정의하는 것은 가능하다.
   ```java
   public User {
     username = username.toLowercase();
   }
   ```
+- 추가 생성자도 정의 가능하지만 모든 사용자 정의 새성자는 첫 번째 구문에서 표준 생성자를 명시적으로 호출해야 한다.
+
+#### 객체 식별과 설명
+- hashCode와 equals, toString() 메서드의 표준 구현은 기본적으로 제공해주고, 마찬가지로 재정의 가능
+
+#### 제네릭
+- 제네릭도 지원한다.
+```java
+Ccontainer<String> stringContainer = new Container<>("hello, String!", "a String container");
+
+String content = stringContainer.content();
+```
+
+
+
