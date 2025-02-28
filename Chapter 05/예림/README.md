@@ -144,5 +144,16 @@ Ccontainer<String> stringContainer = new Container<>("hello, String!", "a String
 String content = stringContainer.content();
 ```
 
+#### 어노테이션
+- 기존 대상 외 레코드에서 더 세밀한 어노테이션을 제어하기 위해 `ElementyType.RECORD_COMPONENT`가 새롭게 도입되었다.
+  
+#### 리플렉션
+- 자바 16에서는 java.lang.Class에 getRecordComponents 메서드를 추가했다. 이 메서드는 다른 타입의 클래스에 대해서는 null을 반환하고, 레코드 기반 타입이면 RecordCompnent 객체의 배열을 반환한다.
+
+### 5.2.3 누락된 기능
+
+#### 추가적인 상태
+바디에 필드가 추가될 수 없지만, 새로운 메서드를 추가함으로써 derived state(파생 상태)는 만들 수 있음.
+
 
 
