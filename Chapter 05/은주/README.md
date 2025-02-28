@@ -275,4 +275,7 @@ record User(String username,
 
 ### 5.3.4. 명목상 튜플로써의 로컬 레코드
 - 자바에서는 동적 튜플이라는 타입이 지원되지 않는다
-- 
+
+### 5.3.5. Optional 데이터 처리
+#### null 이 아닌 컨테이너 확보
+- Optional 을 사용할 때 컴팩트 생성자로 유효성을 검사한다 ex. Objects.requireNonNull(...);
