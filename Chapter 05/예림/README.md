@@ -155,5 +155,29 @@ String content = stringContainer.content();
 #### 추가적인 상태
 바디에 필드가 추가될 수 없지만, 새로운 메서드를 추가함으로써 derived state(파생 상태)는 만들 수 있음.
 
+#### 상속
+- 레코드는 인터페이스를 구현하고 default 메서드를 통해 공통 기능을 공유할 수 있다.
 
+#### 컴포넌트의 기본값과 컴팩트 생성자
+- 자바는 기본값을 지원하지 않지만 다음과 같이 정적 팩토리 메서드를 활용하여 사용자과 원하는 조합을 쉽게 만들 수 있다.
+```java
+public record Origin(int x, int y) {
+  public Origin() {
+    this(0, 0);
+  }
+}
+public record Rectangle(Origin origin, int width, int height) {
+  public static Rectangle atX(int x, int width, int height) {
+    return new Ractangle(x, 0, width, height);
+  }
+
+  public static Rectangle atY(int y, int width, int height) {
+    return new Ractangle(0, y, width, height);
+  }
+
+  // ...
+}
+
+var xOnlyRectangle = Ractangle.atX(23, 300, 400);
+// => Ractangle=Origin[x=23, y=0], width=300, height=400]
 
