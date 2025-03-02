@@ -277,5 +277,10 @@ record User(String username,
 - 자바에서는 동적 튜플이라는 타입이 지원되지 않는다
 
 ### 5.3.5. Optional 데이터 처리
+- Optional 을 통해서 값이 null 일지라도 NullPointerException을 발생시키지 않고 컨테이너와 안전하게 상호작용 가능하다
+  
 #### null 이 아닌 컨테이너 확보
-- Optional 을 사용할 때 컴팩트 생성자로 유효성을 검사한다 ex. Objects.requireNonNull(...);
+- Optional 을 사용할 때 컴팩트 생성자로 유효성을 검사한다
+
+#### 컴팩트 생성자 추가
+- Non-Optional<T> 기반의 인수들로 추가 생성자를 제공하고, 컨테이너 타입을 직접 생성한다
