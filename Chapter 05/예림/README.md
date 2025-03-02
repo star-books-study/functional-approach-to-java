@@ -181,3 +181,9 @@ public record Rectangle(Origin origin, int width, int height) {
 var xOnlyRectangle = Ractangle.atX(23, 300, 400);
 // => Ractangle=Origin[x=23, y=0], width=300, height=400]
 
+```
+#### 단계별 생성
+- 변경 가능한 자료 구조 대신 빌더 패턴을 사용하면 좋다.
+- 사용할거면 정적 중첩 클래스로 직접 패치하는 것이 좋다.
+```java
+public record User()
