@@ -186,4 +186,26 @@ var xOnlyRectangle = Ractangle.atX(23, 300, 400);
 - 변경 가능한 자료 구조 대신 빌더 패턴을 사용하면 좋다.
 - 사용할거면 정적 중첩 클래스로 직접 패치하는 것이 좋다.
 ```java
-public record User()
+public record User(long id, String username, boolean active, Optional<LocalDateTime> lastLogin) {
+  public static final class Builder {
+    // ...
+  }
+}
+
+var builder = new User.Builder("bed");
+```
+- 빌더는 레코드 인스턴스를 더 다양하고 유연하게 생성할 수 있게 한다.
+
+## 5.3 사용 사례와 일반적인 관행
+
+### 5.3.1 레코드 유효성 검사 및 데이터 정제
+- 레코드는 따로 인수가 필요없는 **컴팩트 생성자**라는 걸 지원한다고 앞서 언급했는데, 이 컴팩트 생성자에 유효성 검사나 데이터 정제 로직을 넣으면 딱임
+
+```java
+public record NeedsValidation(int x, int y) {
+  if (x < y) {
+    throw new IllegalArgumentException("x는 y 이상이어야 합니다.");
+  }
+}
+```
+- 아니면 데이터 범위를 초과하는 값을 정규화할 수도 있음. (60분이 넘는 초는 분을 더해준다던가)
