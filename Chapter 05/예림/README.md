@@ -209,3 +209,17 @@ public record NeedsValidation(int x, int y) {
 }
 ```
 - 아니면 데이터 범위를 초과하는 값을 정규화할 수도 있음. (60분이 넘는 초는 분을 더해준다던가)
+
+- 빈 검증 API (@NotNull, @Positive)를 이용할 수도 있음. 레코드는 JavaBean이 아니지만 프로젝트 종속성을 추가해서 사용할 수 있음. (다만 검증이 자동으로 수행되는 것은 아니고 종종 바이트 코드 수정 필요)
+
+### 5.3.2 불변성 강화
+- 레코드 컴포넌트도 표준 생성자를 이용하면 컴포넌트의 불변 복사본을 만들 수 있음(얕은 불변성이지만)
+```java
+public record IncreaseImmutability(List<Stiring> values) {
+  public IncreaseImmutability {
+    values = Collections.unmodifiableList(values); // 변경 불가능한 뷰 생성
+  }
+} 
+```
+
+### 5.3.3 변형된 복사본 생성
