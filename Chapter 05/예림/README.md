@@ -230,3 +230,6 @@ public record IncreaseImmutability(List<Stiring> values) {
 
 
 ### 5.3.4 명목상 튜플로써의 로컬 레코드
+- 자바에서 지원되지 않지만 함수형 프로그래밍에서 널리 사용되는 것 : 동적 튜플
+- 레코드는 명목상 튜플임
+- 자바의 타입 시스템으로 인해 포함된 데이터가 umbrella 타입으로 유지되는 특징이 있음
