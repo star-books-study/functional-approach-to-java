@@ -233,3 +233,33 @@ public record IncreaseImmutability(List<Stiring> values) {
 - 자바에서 지원되지 않지만 함수형 프로그래밍에서 널리 사용되는 것 : 동적 튜플
 - 레코드는 명목상 튜플임
 - 자바의 타입 시스템으로 인해 포함된 데이터가 umbrella 타입으로 유지되는 특징이 있음
+- 레코드는 다른 언어 튜플만큼이나 유연하지는 않지만 로컬 레코드라는 것을 활용하면 즉각적인 로컬 데이터 집계에 사용할 수 있음
+- Map을 반복처리할 때 로컬 레코드를 중간 자료형으로 사용하면 복잡한 데이터 러치에서 직관성을 높일 수 있음
+
+```java
+public List<String> filterAlbums(Map<Integer, List<String>>albums, int minimumYear) {
+  record AlbumsPerYear(int year, List<String> titles) {
+    // ...
+  }
+
+  return albums.entrySet()
+                .stream()
+                .map(AlbumsPerYear::new)
+                .filter(AlbumsPerYear.minimumYear(minimumYear))
+                .sorted(AlbumsPerYear.sortByYear)
+                .map(AlbumsPerYear::titles)
+                .flatMap(List::stream)
+                .toList();
+} 
+```
+
+### 5.3.3 Optional 데이터 처리
+- Optional 타입은 컴포넌트가 필수가 아님을 명확하게 나타내지만 null 값을 받을 가능성에 대비해야 함
+- 안전하게 사용하기 위한 두 가지 조치
+  - null이 아닌 컨테이너 확보
+    - 컴팩트 생성자 내에서 `Objects.requiredNonNull(group, "Optional<String>은 null이 될 수 없습니다.")`와 같은 코드로 유효성 검사
+  - 컴팩트 생성자 추가
+    - Not-Optional<T> 기반의 인수들로 추가 생성자 제공하고 컨테이너 타입을 직접 작성함
+### 5.3.6 레코드의 진화된 직렬화
+- 레코드는 클래스와 달리 더 유연하고 안전한 직렬화를 제공함
+- 
