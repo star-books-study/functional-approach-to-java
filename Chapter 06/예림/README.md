@@ -56,11 +56,18 @@ for (var book : books) {
 List<Book> books = ...;
 
 List<String> result =
-    books.stream()
-    .filter(book -> book.year() < 1920)
-    .filter(book -> book.genre() == Genre.SCIENCE_FICTION)
-    .map(Book::title)
-    .sorted()
-    .limit(3L)
-    .collect(Collectors.toList());
+    books.stream() // 생성 : Stream<Book>
+    .filter(book -> book.year() < 1920) // 중간 : Stream<Book>
+    .filter(book -> book.genre() == Genre.SCIENCE_FICTION) // 중간 : Stream<Book>
+    .map(Book::title) // 중간 : Stream<String>
+    .sorted() // 중간 : Stream<String>
+    .limit(3L) //중간 : Stream<String>
+    .collect(Collectors.toList()); // 종료 : List<String>
 ```
+
+### 6.2.1 스트림의 특성
+- 스트림은 특정한 동작과 예상치가 내장된 함수형 API
+- 다른 방식으로 직접 생성해야 할 수많은 사전 정의된 컴포넌트와 보장된 속성들을 제공
+
+#### 느긋한 계산법
+- 스트림에서 중간 연산을 수행할 때 즉각적으로 실행되지 않음
