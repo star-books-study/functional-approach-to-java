@@ -70,3 +70,4 @@
 ### 6.2.2. 스트림의 핵심, Spliterator
 - 스트림도 자체적인 반복 인터페이스인 java.util.Spliterator<T> 사용하며, **특정 특성을 기반으로 요소 일부를 다른 Spliterator 로 분리할 수 있다**
 - Spliterator 는 부분적인 시퀀스들을 `병렬`로 처리하면서 Collection API 를 `순회`할 수 있게 한다
+  - Spliterator 의 특성들은 스트림이 내부적으로 `어떻게 반복을 수행`하는지, `어떠한 최적화 기능을 지원`하는지를 결정한다 
