@@ -106,3 +106,29 @@ List<String> result =
 - try-catch보다 더 간결하게 예외 처리를 할 수는 없음
 
 ### 6.2.2 스트림의 핵심 Spliterator
+- 스트림도 자체적인 Spliterator<T> 사용
+- 반복자 타입은 자바의 Collection API에 대한 범용 반복자를 사용됨.
+- 그와 달리 Spliterator는 특정 특성을 기반으로 요소의 일부를 다른 Spliterator로 분리할 수 있음
+
+```java
+public interface Spliterator<T> {
+  // 특성
+  int characteristics();
+  default boolean hasCharacteristics(int characteristics) {
+    // ...
+  }
+
+  // 반복
+  boolean tryAdvance(Consumer<? super T> action);
+  default void forEachRemaining(Consumer<? super T> action) {
+    // ...
+  }
+
+  // 스플릿
+  Spliterator<T> trySplit();
+
+  // ...
+}
+
+- 핵심적 역할 : tryAdvance, trySplit
+
