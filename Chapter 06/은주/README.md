@@ -82,3 +82,37 @@
 
 ### 6.3.1. 스트림 생성하기
 - stream() : List, Set 과 같은 컬렉션 기반 자료구조에서 새로운 스트림 인스턴스를 생성하는 가장 간단한 방법
+
+### 6.3.2. 실습하기
+- dropWhile() : 처음으로 false 가 등장하는 시점까지의 요소를 모두 버림
+  - **순서가 정해진** 스트림을 위해 설계됨
+- takeWhile() : dropWhile 의 반대 개념으로, Predicate 이 false 가 될 때까지 요소를 선택함
+  - **이미 정렬되어 있다는 사실을 이용해** Predicate 이 false 가 되면 반복을 중단 할 수 있다. 큰 작업에서는 성능에 직접적인 영향을 줄 수 있으므로 takeWhile() 을 사용하면 된다
+- skip() : 앞에서부터 n개의 요소를 건너뛰고 나머지 요소들을 다음 스트림 연산으로 전달
+- distinct() : 요소를 비교하기 위해 **모든 요소를 버퍼에 저장**해야 한다
+- flatMap() : 컬렉션 또는 Optional 과 같은 컨테이너 형태의 요소를 **'펼쳐서' 새로운 다중 요소를 포함하는 새로운 스트림**으로 만든다
+- mapMulti() : map 과 flatMap 의 두 연산을 하나로 압축한다는 점이다
+  - flatMap 이 **새 스트림을 생성하는 오버헤드를 피할 수 있다** -> 따라서 매핑되는 요소의 수가 매우 적거나 전혀 없는 상황에서 사용이 권장된다
+```java
+// flatMap()
+List<String> words = Arrays.asList("hello", "world");
+List<String> uniqueLetters = words.stream()
+    .flatMap(word -> Arrays.stream(word.split("")))
+    .distinct()
+    .collect(Collectors.toList());
+// 결과: [h, e, l, o, w, r, d]
+
+// mapMulti()
+List<String> words = Arrays.asList("hello", "world");
+List<String> uniqueLetters = words.stream()
+    .mapMulti((word, consumer) -> {
+        for (char c : word.toCharArray()) {
+            consumer.accept(String.valueOf(c));
+        }
+    })
+    .distinct()
+    .collect(Collectors.toList());
+// 결과: [h, e, l, o, w, r, d]
+```
+
+```
