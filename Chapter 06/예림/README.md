@@ -129,6 +129,59 @@ public interface Spliterator<T> {
 
   // ...
 }
+```
 
 - 핵심적 역할 : tryAdvance, trySplit
 
+- 스트림의 특성들
+  - CONCURRENT
+  - DISTINCT
+  - IMMUTABLE
+  - NONNULL
+  - ORDERED
+  - SORTED
+  - SIZED
+  - SUBSIZED
+
+## 6.3 스트림 파이프라인 구축하기
+- 대부분의 데이터 처리는 동일한 체계를 따르며 기본적으로 세 가지 연산으로 축약됨
+  - map
+  - filter
+  - reduce
+- 스트림 API는 이 세 가지 연산을 갖고 있지만 훨씬 더 많은 연산 제공
+
+
+### 6.3.1 스트림 생성하기
+- 각각의 스트림 파이프라인은 기존의 데이터 소스로부터 새로운 스트림 인스턴스를 생성하는 것으로 시작
+- stream 메서드
+  - Collection 기반 자료 구조에서 새로운 스트림 인스턴스를 생성하는 가장 간단한 방법
+  - 기본 구현으로 IMMUTABLE, CONCURRENT Splitator 사용
+- Stream.of 정적 편의 메서드도 사용 가능
+
+### 6.3.2 실습하기
+- 스트림의 요소를 다루는 것은 중간 연산을 통해 이뤄지고, 이 연산은 크게 map, filter, 또는 스트림 동작 수정으로 구분됨
+
+#### 요소 선택
+- `Stream filter(Predicate<? super T) predicate` : Predicate의 결과가 true일 경우 해당 요소는 후속 처리를 위해 선택됨
+- `Stream dropwhile(Predicate<? super T) predicate` : Predicate의 결과가 true일 때까지 통과하는 모든 요소 폐기
+- ORDERED 스트림을 위해 설계
+- 병렬 스트림에서는 여러 스레드 사이의 조정이 필요하므로 연산에 필요한 비용이 많이 들 수 있음
+
+- `Stream takeWhile(Predicate<? super T) predicate` : Predicate가 false가 될 때까지 요소를 선택
+- `Stream<T> limit(long maxSize)` : 이 연산을 통과하는 요소의 최대 개수를 maxSize로 제한
+- `Stream<T> skip(long n)` : 앞에서부터 n개의 요소를 건너뛰고 나머지 요소들을 다음 스트림 연산으로 전달
+- `Stream<T> distinct()` : Object#equals(Object)를 통해 요소들을 비교하며 중복되지 않은 요소만 반환
+- `Stream<T> sorted()` : java.util.Comparable에 부합하는 경우 자연스럽게 정렬됨
+- `Stream<T> sorted(Comparator<? super T> comaparator)` : 사용자 정의 comparator를 사용하여 정렬할 수도 있음
+
+#### 요소 매핑
+- `Stream<R> map(Functio<? super T, ? extends R> mapper)` : mapper 함수가 요소에 적용되고 새로운 요소가 스트림으로 변환 됨
+- `Stream<R> flatMap(Functio<? super T, ? extends Stream<? extends R>> mapper)` 
+  - mapper 함수는 여전히 요소에 적용되지만 새로운 요소를 반환하는 대신에 Stream<R>을 반환해야 함
+  - 컨테이너 형태의 요소를 '펼쳐서' 새로운 다중 요소를 포함하는 새로운 스트림으로 만듦
+  - 이는 후속 작업에 사용됨 
+- `Stream mapMulti(BiConsumer<? super T, ? extends Consumer<? extends R>> mapper)` : 매퍼가 스트림 인스턴스를 반환할 필요가 없고, 대신 Consumer<R>가 요소를 스트림을 통해 더 아래로 전달함
+  - flatMap, multiMap 둘 다 장단점이 있음
+
+#### 스트림에서 Peek 사용
+- 디버깅 가능하도록 함
