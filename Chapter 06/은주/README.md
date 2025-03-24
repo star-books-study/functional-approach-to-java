@@ -115,4 +115,42 @@ List<String> uniqueLetters = words.stream()
 // 결과: [h, e, l, o, w, r, d]
 ```
 
+#### 스트림에서 Peek 사용
+- peek 연산은 주로 `디버깅`을 지원하기 위해 설계되었다
+
+### 6.3.3. 스트림 종료하기
+#### 요소 축소
+- 축소 연산 : **누적 연산자를 반복적으로 적용**하여 스트림의 요소를 **하나의 결과값**으로 만들어낸다.
+  - 이전의 결과를 현재의 요소와 결합하여 새로운 결과를 만들어낸다
+- 축소는 3가지로 구분된다
+  - 요소 : ex. 컬렉션 타입
+  - 초기값 
+  - 누적 함수 : ex. 현재 요소와 이전의 결과 또는 초기값만으로 작동하는 **순수 함수**
+```java
+private static Integer max(Collection<Integer> numbers) {
+    int result = Integer.MIN_VALUE; // 초기값
+
+    for (var value : numbers) { // numbers: 요소
+        result = Math.max(result, value); // 누적 함수
+    }
+
+    return result;
+}
+
+private static <T> T reduce(Collection<T> elements,
+                            T initialValue,
+                            BinaryOperator<T> accumulator) {
+
+    T result = initialValue;
+    for (T element : elements) {
+        result = accumulator.apply(result, element);
+    }
+    return result;
+}
+
+private static Integer max(Collection<Integer> numbers) {
+    return reduce(numbers,
+                    Integer.MIN_VALUE,
+                    Math::max);
+}
 ```
