@@ -176,3 +176,22 @@ int mapReduce = Stream.of("apple", "orange", "banana")
 
 System.out.println("mapReduce: " + mapReduce);
 ```
+
+#### 컬렉터를 활용한 요소 집계
+- 결과 요소를 새로운 자료 구조로 집계하는 단계는 공통적으로 필요하다
+```java
+var fruits = Stream.of("apple", "orange", "banana", "peach")
+                    .reduce(new ArrayList<>(),
+                            (acc, fruit) -> {
+                                var list = new ArrayList<>(acc);
+                                list.add(fruit);
+                                return list; // List (apple, orange, banana, peach)
+                    },
+                    (lhs, rhs) -> { // 병렬 스트림이 아니면 사용 X
+                          var list = new ArrayList<>(lhs);
+                                list.addAll(rhs);
+                                return list;
+                    });
+
+        System.out.println("aggregated = " + fruits);
+````
