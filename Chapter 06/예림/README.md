@@ -202,3 +202,20 @@ public interface Spliterator<T> {
   - 초기값
   - 누적 함수 : 축소 로직은 현재 요소와 이전의 결과 또는 초기값만으로 작동한다. 새로운 값을  생성하기 위해 입력에만 의존하기 때문에 이를 '순수 함수'라고 할 수 있다.'
 - 마치 반복문 돌면서 `result = Math.max(result, value);`로 최댓값을 찾는 게 축소 연산임
+  ```java
+  Integer max(Collection<Integer> numbers) {
+    int result = Integer.MIN_VALUE;
+
+    for(var value : numbers) {
+      result = Math.max(result,value)
+    }
+
+    return result;
+  }
+  ```
+- 함수형 접근방식은 연산이 어떻게 수행되는지와 실제로 무엇을 하는지를 명확하게 구분
+- 최댓값 찾기를 다음과 같이 단일 메서드로 나타낼 수 있음
+```java
+Integer max(Collection<Integer> numbers) {
+  return reduce(elements, Integer.MIN_VALUE, Math::max);
+}
