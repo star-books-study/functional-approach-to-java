@@ -154,3 +154,44 @@ private static Integer max(Collection<Integer> numbers) {
                     Math::max);
 }
 ```
+- 스트림 API 가 제공하는 3가지 기본 reduce 연산
+  -     T reduce(T identity, BinaryOperator<T> accumulator); 
+  -     Optional<T> reduce(BinaryOperator<T> accumulator);
+    - 스트림의 첫번째 요소가 초기값으로 사용된다     
+  -     <U> U reduce(U identity,
+                 BiFunction<U, ? super T, U> accumulator,
+                 BinaryOperator<U> combiner);
+    - 스트림에는 T 타입 요소가 포함되어 있지만 최종적으로 원하는 축소 결과가 U 타입인 경우 사용
+```java
+Integer reduceOnly = Stream.of("apple", "orange", "banana")
+                            .reduce(0, // 초기값
+                                    (acc, str) -> acc + str.length(), // acc 가 계속 초기값 처럼 누적되어 사용되는 것 
+                                    Integer::sum);
+
+System.out.println("reduceOnly: " + reduceOnly);
+
+int mapReduce = Stream.of("apple", "orange", "banana")
+                       .mapToInt(String::length)
+                       .reduce(0, (acc, length) -> acc + length);
+
+System.out.println("mapReduce: " + mapReduce);
+```
+
+#### 컬렉터를 활용한 요소 집계
+- 결과 요소를 새로운 자료 구조로 집계하는 단계는 공통적으로 필요하다
+```java
+var fruits = Stream.of("apple", "orange", "banana", "peach")
+                    .reduce(new ArrayList<>(),
+                            (acc, fruit) -> {
+                                var list = new ArrayList<>(acc);
+                                list.add(fruit);
+                                return list; // List (apple, orange, banana, peach)
+                    },
+                    (lhs, rhs) -> { // 병렬 스트림이 아니면 사용 X
+                          var list = new ArrayList<>(lhs);
+                                list.addAll(rhs);
+                                return list;
+                    });
+
+        System.out.println("aggregated = " + fruits);
+````
