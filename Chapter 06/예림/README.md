@@ -219,3 +219,9 @@ public interface Spliterator<T> {
 Integer max(Collection<Integer> numbers) {
   return reduce(elements, Integer.MIN_VALUE, Math::max);
 }
+```
+- 스트림 API가 제공하는 세 가지 기본 reduce 연산
+  - T reduce(T identity, BinaryOperator<T> accumulator)
+  - Optional<T> reduce(BinaryOperator<T> accumulator)
+  - U reduce(U identity, BiFunctional<U, ? super T, U> accumulator, BinaryOperator<U> combiner)
+- 
